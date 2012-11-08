@@ -71,8 +71,9 @@ static Key keys[] = {
 	/* modifier                     key        function        argument */
 
   /* customized */
-	{ MODKEY,                       XK_o,        spawn,        {.v = dmenucmd } },
-	{ MODKEY,                       XK_q,        spawn,        {.v = termcmd } },
+	{ MODKEY,                       XK_o,      spawn,          {.v = dmenucmd } },
+	{ MODKEY,                       XK_q,      spawn,          {.v = termcmd } },
+	{ MODKEY,                       XK_w,      killclient,     {0} },
 
   /* special keys */
   { 0,                XF86XK_AudioNext,        spawn,        {.v = mocp_next } },
