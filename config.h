@@ -66,6 +66,7 @@ static const char *amixer_lower[]     = { "amixer", "-q", "set", "PCM", "5%-", N
 static const char *amixer_raise[]     = { "amixer", "-q", "set", "PCM", "5%+", NULL };
 static const char *toggle_touchpad[]  = { "toggle-touchpad", NULL };
 static const char *pm_suspend[]       = { "sudo", "pm-suspend", NULL };
+static const char *xclip_sync[]       = { "sh", "-c", "xclip -o | xclip -sel C", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -79,7 +80,6 @@ static Key keys[] = {
   { 0,                XF86XK_AudioNext,        spawn,        {.v = mocp_next } },
   { 0,                XF86XK_AudioPrev,        spawn,        {.v = mocp_prev } },
   { 0,                XF86XK_AudioPlay,        spawn,        {.v = mocp_playpause } },
-  //{ 0,                XF86XK_AudioStop,        spawn,        {.v = mocp_exit } },
   { 0,                XF86XK_AudioMute,        spawn,        {.v = amixer_mute } },
   { 0,                XF86XK_AudioLowerVolume, spawn,        {.v = amixer_lower } },
   { 0,                XF86XK_AudioRaiseVolume, spawn,        {.v = amixer_raise } },
@@ -96,7 +96,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY,                       XK_c,      killclient,     {0} },
+	{ MODKEY,                       XK_c,      spawn,          {.v = xclip_sync} },
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
