@@ -12,11 +12,13 @@ cached() {
 
 updates() {
   cached updates 86400 '
-    if [ -z "$(pgrep pacman)" ]; then
-      pkg -Sy > /dev/null
-      N=$(pkg -Qu 2>/dev/null | wc -l)
-      if [ "$N" -gt 0 ]; then
-        echo "$N updates"
+    if [ $(cut -d . -f  1 /proc/uptime) -gt 1000 ]; then
+      if [ -z "$(pgrep pacman)" ]; then
+        pkg -Sy > /dev/null
+        N=$(pkg -Qu 2>/dev/null | wc -l)
+        if [ "$N" -gt 0 ]; then
+          echo "$N updates"
+        fi
       fi
     fi
     '
