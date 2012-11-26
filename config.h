@@ -4,7 +4,7 @@
 
 /* appearance */
 //static const char font[]            = "-*-terminus-medium-r-*-*-16-*-*-*-*-*-*-*";
-static const char font[]            = "fixed";
+static const char font[]            = "-misc-fixed-medium-r-semicondensed-*-13-*-*-*-*-*-*-*";
 static const char normbordercolor[] = "#444444";
 static const char normbgcolor[]     = "#222222";
 static const char normfgcolor[]     = "#bbbbbb";
