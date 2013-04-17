@@ -11,11 +11,11 @@ cached() {
 
 
 updates() {
-  cached updates 86400 '
+  cached updates 43200 '
     if [ $(cut -d . -f  1 /proc/uptime) -gt 1000 ]; then
       if [ -z "$(pgrep pacman)" ]; then
-        pkg -Sy > /dev/null
-        N=$(pkg -Qu 2>/dev/null | wc -l)
+        sudo pacman -Sy > /dev/null
+        N=$(pacman -Qu 2>/dev/null | wc -l)
         if [ "$N" -gt 0 ]; then
           echo "$N updates"
         fi
@@ -34,7 +34,8 @@ bat() {
   cached bat 10 "
     acpi | cut -d : -f 2- \
          | sed 's/^ //g' | tr '[:upper:]' '[:lower:]' \
-         | sed 's/\(dis\)\?charging, //' | sed 's/:[0-9]\+ / /'
+         | sed 's/\(dis\)\?charging, //' | sed 's/:[0-9]\+ / /' \
+         | sed 's/, charging at zero rate - will never fully charge//'
     "
 }
 
@@ -52,20 +53,26 @@ clock() {
 
 
 moc() {
-  local tmp
-  tmp=$(mocp --format '%t -- %a %ct/%tt' 2>/dev/null)
-  if [ 0 -eq $? ]; then
-    echo "$tmp"
+  if $(mocp -i 2>/dev/null | grep -v STOP >/dev/null); then
+    local tmp
+    tmp=$(mocp --format '%t %ct/%tt' 2>/dev/null)
+    if [ 0 -eq $? ]; then
+      echo "$tmp"
+    fi
   fi
 }
 
+
+queue() {
+  echo Q $(ls ~/q | wc -l)
+}
 
 main() {
   while true
   do
     STATUS=
 
-    for callback in updates fs bat moc mix clock
+    for callback in queue updates fs bat moc mix clock
     do
       local tmp
       tmp=$($callback)
