@@ -67,6 +67,8 @@ static const char *amixer_raise[]     = { "amixer", "-q", "set", "PCM", "5%+", N
 static const char *toggle_touchpad[]  = { "toggle-touchpad", NULL };
 static const char *pm_suspend[]       = { "sudo", "pm-suspend", NULL };
 static const char *xclip_sync[]       = { "sh", "-c", "xclip -o | xclip -sel C", NULL };
+static const char *xclip_sync2[]      = { "sh", "-c", "xclip -o -sel C | xclip", NULL };
+static const char *aplay[]            = { "aplay", "/usr/share/sounds/alsa/Front_Center.wav" };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -97,6 +99,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY,                       XK_c,      spawn,          {.v = xclip_sync} },
+	{ MODKEY|ShiftMask,             XK_c,      spawn,          {.v = xclip_sync2} },
+	{ MODKEY,                       XK_u,      spawn,          {.v = aplay} },
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
