@@ -1,5 +1,7 @@
 #include <X11/XF86keysym.h>
 
+#include "push.c"
+
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
@@ -15,9 +17,6 @@ static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const Bool showbar           = True;     /* False means no bar */
 static const Bool topbar            = True;     /* False means bottom bar */
-
-/* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -77,6 +76,11 @@ static Key keys[] = {
 	{ MODKEY,                       XK_o,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_q,      spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_w,      killclient,     {0} },
+	{ MODKEY,                       XK_c,      spawn,          {.v = xclip_sync} },
+	{ MODKEY|ShiftMask,             XK_c,      spawn,          {.v = xclip_sync2} },
+	{ MODKEY,                       XK_u,      spawn,          {.v = aplay} },
+  { MODKEY|ShiftMask,             XK_j,      pushdown,       { 0 }},
+  { MODKEY|ShiftMask,             XK_k,      pushup,         { 0 }},
 
   /* special keys */
   { 0,                XF86XK_AudioNext,        spawn,        {.v = mocp_next } },
@@ -98,9 +102,6 @@ static Key keys[] = {
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY,                       XK_c,      spawn,          {.v = xclip_sync} },
-	{ MODKEY|ShiftMask,             XK_c,      spawn,          {.v = xclip_sync2} },
-	{ MODKEY,                       XK_u,      spawn,          {.v = aplay} },
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
