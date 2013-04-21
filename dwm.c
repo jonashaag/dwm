@@ -1,3 +1,4 @@
+// vim: set noexpandtab:
 /* See LICENSE file for copyright and license details.
  *
  * dynamic window manager is designed like any other X client as well. It is
@@ -92,7 +93,7 @@ struct Client {
 	int basew, baseh, incw, inch, maxw, maxh, minw, minh;
 	int bw, oldbw;
 	unsigned int tags;
-	Bool isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;
+	Bool isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, background;
 	Client *next;
 	Client *snext;
 	Monitor *mon;
@@ -132,6 +133,7 @@ typedef struct {
 	unsigned int tags;
 	Bool isfloating;
 	int monitor;
+	Bool background;
 } Rule;
 
 /* function declarations */
@@ -323,6 +325,7 @@ applyrules(Client *c) {
 		&& (!r->instance || strstr(instance, r->instance)))
 		{
 			c->isfloating = r->isfloating;
+			c->background = r->background;
 			c->tags |= r->tags;
 			for(m = mons; m && m->num != r->monitor; m = m->next);
 			if(m)
@@ -747,9 +750,11 @@ drawbar(Monitor *m) {
 	Client *c;
 
 	for(c = m->clients; c; c = c->next) {
-		occ |= c->tags;
-		if(c->isurgent)
-			urg |= c->tags;
+		if(!c->background) {
+			occ |= c->tags;
+			if(c->isurgent)
+				urg |= c->tags;
+		}
 	}
 	dc.x = 0;
 	for(i = 0; i < LENGTH(tags); i++) {
@@ -895,7 +900,7 @@ expose(XEvent *e) {
 void
 focus(Client *c) {
 	if(!c || !ISVISIBLE(c))
-		for(c = selmon->stack; c && !ISVISIBLE(c); c = c->snext);
+		for(c = selmon->stack; c && (c->background || !ISVISIBLE(c)); c = c->snext);
 	/* was if(selmon->sel) */
 	if(selmon->sel && selmon->sel != c)
 		unfocus(selmon->sel, False);
@@ -947,17 +952,17 @@ focusstack(const Arg *arg) {
 	if(!selmon->sel)
 		return;
 	if(arg->i > 0) {
-		for(c = selmon->sel->next; c && !ISVISIBLE(c); c = c->next);
+		for(c = selmon->sel->next; c && (c->background || !ISVISIBLE(c)); c = c->next);
 		if(!c)
-			for(c = selmon->clients; c && !ISVISIBLE(c); c = c->next);
+			for(c = selmon->clients; c && (c->background || !ISVISIBLE(c)); c = c->next);
 	}
 	else {
 		for(i = selmon->clients; i != selmon->sel; i = i->next)
-			if(ISVISIBLE(i))
+			if(!i->background && ISVISIBLE(i))
 				c = i;
 		if(!c)
 			for(; i; i = i->next)
-				if(ISVISIBLE(i))
+				if(!i->background && ISVISIBLE(i))
 					c = i;
 	}
 	if(c) {
@@ -1045,6 +1050,8 @@ gettextprop(Window w, Atom atom, char *text, unsigned int size) {
 void
 grabbuttons(Client *c, Bool focused) {
 	updatenumlockmask();
+	if(c->background)
+		return;
 	{
 		unsigned int i, j;
 		unsigned int modifiers[] = { 0, LockMask, numlockmask, numlockmask|LockMask };
@@ -1223,6 +1230,9 @@ manage(Window w, XWindowAttributes *wa) {
 	arrange(c->mon);
 	XMapWindow(dpy, c->win);
 	focus(NULL);
+	if(c->background) {
+		XLowerWindow(dpy, c->win);
+	}
 }
 
 void
@@ -1583,7 +1593,7 @@ sendevent(Client *c, Atom proto) {
 
 void
 setfocus(Client *c) {
-	if(!c->neverfocus) {
+	if(!c->neverfocus && !c->background) {
 		XSetInputFocus(dpy, c->win, RevertToPointerRoot, CurrentTime);
 		XChangeProperty(dpy, root, netatom[NetActiveWindow],
  		                XA_WINDOW, 32, PropModeReplace,

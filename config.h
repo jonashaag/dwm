@@ -1,3 +1,4 @@
+// vim: set noexpandtab:
 #include <X11/XF86keysym.h>
 
 #include "push.c"
@@ -23,15 +24,15 @@ static const Bool showbar           = True;     /* False means no bar */
 static const Bool topbar            = True;     /* False means bottom bar */
 
 static const Rule rules[] = {
-	/* xprop(1):
-	 *	WM_CLASS(STRING) = instance, class
-	 *	WM_NAME(STRING) = title
-	 */
-	/* class          instance    title   tags mask     isfloating   monitor */
-	{ "Gimp",         NULL,       NULL,   0,            True,        -1 },
-	{ "Chromium",     NULL,       NULL,   1 << 0,       False,       -2 },
-  { "Pidgin",       NULL,       NULL,   1 << 6,       False,       -1 },
-  { "Thunderbird",  NULL,       NULL,   1 << 7,       False,       -1 },
+  /* xprop(1):
+   *  WM_CLASS(STRING) = instance, class
+   *  WM_NAME(STRING) = title
+   */
+  /* class          instance    title   tag mask   float   monitor   background */
+  { "Gimp",         NULL,       NULL,   0,         True,   -1,       False },
+  { "Chromium",     NULL,       NULL,   1 << 0,    False,  -2,       False },
+  { "Thunderbird",  NULL,       NULL,   1 << 7,    False,  -1,       False },
+  { "dwm-bg",       NULL,       NULL,   0xffffff,  True,   -1,       True },
 };
 
 /* layout(s) */
