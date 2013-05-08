@@ -11,17 +11,12 @@ cached() {
 
 
 updates() {
-  cached updates 43200 '
-    if [ $(cut -d . -f  1 /proc/uptime) -gt 1000 ]; then
-      if [ -z "$(pgrep pacman)" ]; then
-        sudo pacman -Sy > /dev/null
-        N=$(pacman -Qu 2>/dev/null | wc -l)
-        if [ "$N" -gt 0 ]; then
-          echo "$N updates"
-        fi
-      fi
+  cached updates 10000 '
+    N=$(pacman -Qu 2>/dev/null | wc -l)
+    if [ "$N" -gt 0 ]; then
+      echo "$N updates"
     fi
-    '
+  '
 }
 
 
@@ -86,7 +81,7 @@ main() {
     done
 
     xsetroot -name "$STATUS"
-    sleep 1
+    sleep 2
   done
 }
 
